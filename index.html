@@ -600,5 +600,54 @@
             analyzeMarket('OTC1', 'EUR/USD', 'eu');
         };
     </script>
+    <!-- أضف هذا الكود قبل </body> -->
+<script>
+// بيانات أسواق OTC الجديدة
+const otcMarkets = [
+    { id: 'OTC1', name: 'EUR/USD', flag: 'eu' },
+    { id: 'OTC2', name: 'GBP/USD', flag: 'gb' },
+    { id: 'OTC3', name: 'USD/JPY', flag: 'jp' },
+    { id: 'OTC4', name: 'AUD/USD', flag: 'au' },
+    { id: 'OTC5', name: 'USD/CAD', flag: 'ca' }
+];
+
+// دالة لإضافة الأسواق إلى الواجهة
+function addOTCMarkets() {
+    const marketsContainer = document.createElement('div');
+    marketsContainer.className = 'otc-markets';
+    marketsContainer.innerHTML = `
+        <h2 style="color: #2c3e50; margin-top: 30px; border-bottom: 2px solid #3498db; padding-bottom: 10px;">
+            أسواق OTC
+        </h2>
+        <div class="markets-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+            ${otcMarkets.map(market => `
+                <div style="background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                        <span class="fi fi-${market.flag}" style="margin-left: 10px; font-size: 24px;"></span>
+                        <h3>${market.name}</h3>
+                    </div>
+                    <button onclick="analyzeMarket('${market.id}', '${market.name}', '${market.flag}')"
+                            style="background: #3498db; color: white; border: none; padding: 10px 15px; border-radius: 5px; width: 100%; cursor: pointer;">
+                        تحليل السوق
+                    </button>
+                </div>
+            `).join('')}
+        </div>
+    `;
+
+    document.body.appendChild(marketsContainer);
+}
+
+// تحميل مكتبة الأعلام إذا لم تكن موجودة
+if (!document.querySelector('link[href*="flag-icons"]')) {
+    const flagCSS = document.createElement('link');
+    flagCSS.rel = 'stylesheet';
+    flagCSS.href = 'https://cdnjs.cloudflare.com/ajax/libs/flag-icons/6.6.6/css/flag-icons.min.css';
+    document.head.appendChild(flagCSS);
+}
+
+// استدعاء الدالة عند تحميل الصفحة
+window.addEventListener('DOMContentLoaded', addOTCMarkets);
+</script>
 </body>
 </html>
