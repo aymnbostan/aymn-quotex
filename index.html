@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DIAMOND PRO - التحليل الفني الدقيق</title>
+    <title>DIAMOND PRO - نظام التحليل الفني</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.0"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -31,11 +31,11 @@
         
         .container {
             max-width: 1200px;
-            margin: 80px auto 20px;
+            margin: 100px auto 20px;
             padding: 20px;
         }
         
-        /* نظام الإشارات */
+        /* نظام الإشارات المصحح */
         .signal-center {
             position: fixed;
             top: 20px;
@@ -76,21 +76,23 @@
         }
         
         /* قسم الأسواق */
-        .markets-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
+        .markets-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+        
+        .markets-column {
+            width: 48%;
         }
         
         .market-card {
             background: var(--card);
             padding: 15px;
             border-radius: 10px;
+            margin-bottom: 15px;
             cursor: pointer;
             transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
@@ -100,15 +102,14 @@
         }
         
         .accuracy-badge {
-            position: absolute;
-            top: 10px;
-            left: 10px;
             background: rgba(16, 185, 129, 0.2);
             color: var(--up);
-            padding: 3px 8px;
+            padding: 3px 10px;
             border-radius: 20px;
             font-size: 0.8em;
             font-weight: bold;
+            display: inline-block;
+            margin-bottom: 10px;
         }
         
         /* الرسم البياني */
@@ -117,7 +118,7 @@
             padding: 20px;
             border-radius: 10px;
             margin-top: 30px;
-            height: 500px;
+            height: 400px;
         }
         
         /* المؤشرات الفنية */
@@ -155,34 +156,36 @@
     </style>
 </head>
 <body>
-    <!-- نظام الإشارات -->
+    <!-- نظام الإشارات في منتصف الصفحة العلوي -->
     <div class="signal-center" id="signalCenter"></div>
     
     <!-- القسم الرئيسي -->
     <div class="container">
-        <!-- قسم الأسواق -->
-        <div class="markets-section">
-            <h2><i class="fas fa-chart-line"></i> الأسواق العالمية</h2>
-            <div class="markets-grid">
-                <div class="market-card" onclick="analyzePair('EURUSD', 'يورو/دولار')">
-                    <div class="accuracy-badge">96%</div>
-                    <h3>EUR/USD</h3>
-                    <p>يورو/دولار أمريكي</p>
+        <!-- قسم الأسواق على الجانبين -->
+        <div class="markets-container">
+            <div class="markets-column">
+                <div class="market-card" onclick="analyzePair('XAUUSD', 'ذهب/دولار', '15s')">
+                    <div class="accuracy-badge">دقة 96%</div>
+                    <h3>XAU/USD</h3>
+                    <p>ذهب/دولار أمريكي</p>
                 </div>
-                <div class="market-card" onclick="analyzePair('GBPUSD', 'جنيه/دولار')">
-                    <div class="accuracy-badge">95%</div>
-                    <h3>GBP/USD</h3>
-                    <p>جنيه إسترليني/دولار أمريكي</p>
-                </div>
-                <div class="market-card" onclick="analyzePair('USDJPY', 'دولار/ين')">
-                    <div class="accuracy-badge">94%</div>
+                <div class="market-card" onclick="analyzePair('USDJPY', 'دولار/ين', '15s')">
+                    <div class="accuracy-badge">دقة 95%</div>
                     <h3>USD/JPY</h3>
                     <p>دولار أمريكي/ين ياباني</p>
                 </div>
-                <div class="market-card" onclick="analyzePair('XAUUSD', 'ذهب/دولار')">
-                    <div class="accuracy-badge">93%</div>
-                    <h3>XAU/USD</h3>
-                    <p>ذهب/دولار أمريكي</p>
+            </div>
+            
+            <div class="markets-column">
+                <div class="market-card" onclick="analyzePair('GBPUSD', 'جنيه/دولار', '15s')">
+                    <div class="accuracy-badge">دقة 94%</div>
+                    <h3>GBP/USD</h3>
+                    <p>جنيه إسترليني/دولار أمريكي</p>
+                </div>
+                <div class="market-card" onclick="analyzePair('EURUSD', 'يورو/دولار', '15s')">
+                    <div class="accuracy-badge">دقة 96%</div>
+                    <h3>EUR/USD</h3>
+                    <p>يورو/دولار أمريكي</p>
                 </div>
             </div>
         </div>
@@ -197,20 +200,20 @@
                 <h3><i class="fas fa-chart-bar"></i> المؤشرات الفنية</h3>
                 <div class="indicators-grid">
                     <div class="indicator-item">
-                        <span>RSI (14)</span>
-                        <div class="indicator-value">42.56</div>
+                        <span>Stochastic (14,3,3)</span>
+                        <div class="indicator-value">28.45</div>
                     </div>
                     <div class="indicator-item">
                         <span>MACD (12,26,9)</span>
                         <div class="indicator-value">-0.0012</div>
                     </div>
                     <div class="indicator-item">
-                        <span>Bollinger Bands</span>
-                        <div class="indicator-value">1.1234</div>
+                        <span>RSI (14)</span>
+                        <div class="indicator-value">42.56</div>
                     </div>
                     <div class="indicator-item">
-                        <span>Stochastic (14,3,3)</span>
-                        <div class="indicator-value">28.45</div>
+                        <span>Bollinger Bands</span>
+                        <div class="indicator-value">1.1234</div>
                     </div>
                 </div>
             </div>
@@ -218,8 +221,8 @@
     </div>
 
     <script>
-        // نظام الإشارات
-        function showSignal(type, message, pair, accuracy) {
+        // نظام الإشارات المصحح
+        function showSignal(type, message, pair, accuracy, timeframe) {
             const container = document.getElementById('signalCenter');
             const signal = document.createElement('div');
             
@@ -233,7 +236,7 @@
                 <span class="signal-icon">${signalType.icon}</span>
                 <div>
                     <strong>${message}</strong>
-                    <div>${pair} | دقة ${accuracy}%</div>
+                    <div>${pair} | ${timeframe} | دقة ${accuracy}%</div>
                 </div>
             `;
             
@@ -246,7 +249,7 @@
         }
 
         // تحليل زوج العملات
-        function analyzePair(pair, pairName) {
+        function analyzePair(pair, pairName, timeframe) {
             // أنماط الشموع اليابانية المدعومة
             const patterns = {
                 buy: [
@@ -263,7 +266,7 @@
                 ]
             };
             
-            // محاكاة تحليل بدقة 95-96%
+            // محاكاة تحليل بدقة 94-96%
             const signalType = Math.random() > 0.5 ? 'buy' : 'sell';
             const randomPattern = patterns[signalType][Math.floor(Math.random() * patterns[signalType].length)];
             const accuracy = 94 + Math.floor(Math.random() * 3); // 94-96%
@@ -272,15 +275,16 @@
                 signalType,
                 `إشارة ${signalType === 'buy' ? 'شراء' : 'بيع'} - ${randomPattern}`,
                 pairName,
-                accuracy
+                accuracy,
+                timeframe
             );
             
-            updateChart(pair);
+            updateChart(pair, timeframe);
             updateIndicators();
         }
         
         // تحديث الرسم البياني
-        function updateChart(pair) {
+        function updateChart(pair, timeframe) {
             const ctx = document.getElementById('candleChart').getContext('2d');
             
             if (window.candleChart) {
@@ -288,13 +292,13 @@
             }
             
             // بيانات شموع عشوائية (في التطبيق الحقيقي تستقبل من API)
-            const data = generateCandleData();
+            const data = generateCandleData(timeframe);
             
             window.candleChart = new Chart(ctx, {
                 type: 'candlestick',
                 data: {
                     datasets: [{
-                        label: pair,
+                        label: `${pair} (${timeframe})`,
                         data: data,
                         color: {
                             up: '#10b981',
@@ -307,7 +311,12 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        x: { type: 'time', time: { unit: 'minute' } },
+                        x: { 
+                            type: 'time',
+                            time: {
+                                unit: timeframe === '15s' ? 'second' : 'minute'
+                            }
+                        },
                         y: { ticks: { callback: v => v.toFixed(4) } }
                     }
                 }
@@ -315,16 +324,18 @@
         }
         
         // توليد بيانات شموع عشوائية
-        function generateCandleData() {
+        function generateCandleData(timeframe) {
             const candles = [];
             let prevClose = 1.0 + Math.random() * 0.5;
+            const now = new Date();
+            const interval = timeframe === '15s' ? 15000 : 60000;
             
             for (let i = 30; i >= 0; i--) {
                 const open = prevClose;
                 const high = open * (1 + Math.random() * 0.005);
                 const low = open * (1 - Math.random() * 0.005);
                 const close = low + Math.random() * (high - low);
-                const time = new Date(Date.now() - i * 60000);
+                const time = new Date(now - i * interval);
                 
                 candles.push({ x: time, o: open, h: high, l: low, c: close });
                 prevClose = close;
@@ -335,7 +346,6 @@
         
         // تحديث المؤشرات الفنية
         function updateIndicators() {
-            // في التطبيق الحقيقي، هذه القيم تأتي من التحليل الفعلي
             document.querySelectorAll('.indicator-value').forEach(el => {
                 const base = Math.random() * 50;
                 const value = base + (Math.random() * 20 - 10);
@@ -345,19 +355,7 @@
         
         // تحليل تلقائي عند التحميل
         window.onload = function() {
-            analyzePair('EURUSD', 'يورو/دولار');
-            
-            // تحليل تلقائي كل دقيقة (محاكاة)
-            setInterval(() => {
-                const pairs = [
-                    ['EURUSD', 'يورو/دولار'],
-                    ['GBPUSD', 'جنيه/دولار'],
-                    ['USDJPY', 'دولار/ين'],
-                    ['XAUUSD', 'ذهب/دولار']
-                ];
-                const randomPair = pairs[Math.floor(Math.random() * pairs.length)];
-                analyzePair(...randomPair);
-            }, 60000);
+            analyzePair('EURUSD', 'يورو/دولار', '15s');
         };
     </script>
 </body>
