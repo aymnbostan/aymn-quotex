@@ -3,157 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DIAMOND PRO - نظام التحليل الفني الخارق</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.0.2"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icons/6.6.6/css/flag-icons.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <title>نظام الإشارات المالية</title>
     <style>
-        :root {
-            --primary: #0f172a;
-            --secondary: #1e40af;
-            --up: #10b981;
-            --down: #ef4444;
-            --neutral: #f59e0b;
-            --bg: #020617;
-            --card: #1e293b;
-            --text: #e2e8f0;
-            --profit-high: #10b981;
-            --profit-medium: #f59e0b;
-            --profit-low: #ef4444;
-        }
-        
+        /* الأنماط الأساسية */
         body {
-            font-family: 'Tajawal', sans-serif;
-            background: var(--bg);
-            color: var(--text);
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f7fa;
             margin: 0;
             padding: 0;
-            background-image: radial-gradient(circle at 10% 20%, rgba(30, 64, 175, 0.2) 0%, transparent 20%),
-                              radial-gradient(circle at 90% 80%, rgba(239, 68, 68, 0.2) 0%, transparent 20%);
-            min-height: 100vh;
+            color: #333;
         }
         
-        /* نظام عرض الإشارات المحسن */
-        .signal-container {
+        /* حاوية الإشارات */
+        .signals-container {
             position: fixed;
             top: 20px;
             left: 20px;
             right: 20px;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        
-        .signal-message {
-            background: rgba(30, 41, 59, 0.95);
-            padding: 15px 25px;
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            border-left: 5px solid var(--neutral);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            animation: fadeIn 0.5s ease-in-out;
-            display: flex;
-            align-items: center;
             max-width: 400px;
+            z-index: 1000;
         }
         
-        .signal-up {
-            border-left-color: var(--up) !important;
-            animation: pulse 2s infinite;
+        /* بطاقة الإشارة */
+        .signal-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-right: 5px solid;
+            animation: fadeIn 0.5s ease-out;
         }
         
-        .signal-down {
-            border-left-color: var(--down) !important;
-            animation: pulse-red 2s infinite;
+        /* أنواع الإشارات */
+        .signal-buy {
+            border-right-color: #10b981;
+        }
+        
+        .signal-sell {
+            border-right-color: #ef4444;
         }
         
         .signal-neutral {
-            border-left-color: var(--neutral) !important;
+            border-right-color: #f59e0b;
         }
         
-        .signal-icon {
-            font-size: 1.5em;
-            margin-left: 10px;
+        /* نص الإشارة */
+        .signal-text {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 5px;
         }
         
+        .signal-details {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        /* الرسوم المتحركة */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
         }
-        
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-        }
-        
-        @keyframes pulse-red {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-        }
-        
-        /* باقي الأنماط... */
     </style>
 </head>
 <body>
-    <!-- حاوية الإشارات الجديدة -->
-    <div class="signal-container" id="signalContainer">
-        <!-- سيتم إضافة الإشارات هنا ديناميكيًا -->
-    </div>
-
-    <div class="container">
-        <!-- باقي محتوى الصفحة... -->
+    <!-- حاوية عرض الإشارات -->
+    <div class="signals-container" id="signalsContainer">
+        <!-- سيتم إضافة الإشارات هنا تلقائيا -->
     </div>
 
     <script>
-        // دالة لعرض الإشارات
-        function showSignal(type, message, pair, timeframe) {
-            const container = document.getElementById('signalContainer');
-            const signal = document.createElement('div');
-            
-            let icon, signalClass;
-            switch(type) {
-                case 'up':
-                    icon = '🟢';
-                    signalClass = 'signal-up';
-                    break;
-                case 'down':
-                    icon = '🔴';
-                    signalClass = 'signal-down';
-                    break;
-                default:
-                    icon = '🟠';
-                    signalClass = 'signal-neutral';
+        // بيانات الإشارات المطلوبة
+        const signals = [
+            {
+                type: "neutral",
+                message: "السوق متقلب الآن",
+                pair: "USD/JPY",
+                timeframe: "1m"
+            },
+            {
+                type: "sell",
+                message: "إشارة بيع محتملة",
+                pair: "GBP/USD",
+                timeframe: "15s"
+            },
+            {
+                type: "buy",
+                message: "إشارة شراء قوية",
+                pair: "EUR/USD",
+                timeframe: "5m"
             }
+        ];
+
+        // دالة إنشاء بطاقة إشارة
+        function createSignalCard(signal) {
+            const card = document.createElement('div');
+            card.className = `signal-card signal-${signal.type}`;
             
-            signal.className = `signal-message ${signalClass}`;
-            signal.innerHTML = `
-                <span class="signal-icon">${icon}</span>
-                <div>
-                    <strong>${message}</strong>
-                    <div style="font-size: 0.9em; opacity: 0.8;">${pair} | ${timeframe}</div>
-                </div>
+            card.innerHTML = `
+                <div class="signal-text">${signal.message}</div>
+                <div class="signal-details">${signal.pair} | ${signal.timeframe}</div>
             `;
             
-            container.prepend(signal);
-            
-            // إزالة الإشارة بعد 10 ثواني
-            setTimeout(() => {
-                signal.style.animation = 'fadeIn 0.5s reverse';
-                setTimeout(() => signal.remove(), 500);
-            }, 10000);
+            return card;
         }
-        
-        // مثال لاستخدام الإشارات:
-        showSignal('up', 'إشارة شراء قوية', 'EUR/USD', '5m');
-        showSignal('down', 'إشارة بيع محتملة', 'GBP/USD', '15s');
-        showSignal('neutral', 'السوق متقلب الآن', 'USD/JPY', '1m');
-        
-        // يمكنك استدعاء showSignal من أي مكان في الكود عند الحصول على إشارة جديدة
+
+        // عرض جميع الإشارات
+        function displayAllSignals() {
+            const container = document.getElementById('signalsContainer');
+            
+            signals.forEach((signal, index) => {
+                setTimeout(() => {
+                    container.appendChild(createSignalCard(signal));
+                }, index * 300); // تأخير بين كل إشارة
+            });
+        }
+
+        // بدء العرض عند تحميل الصفحة
+        window.onload = displayAllSignals;
     </script>
 </body>
 </html>
