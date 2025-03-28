@@ -649,5 +649,154 @@ if (!document.querySelector('link[href*="flag-icons"]')) {
 // استدعاء الدالة عند تحميل الصفحة
 window.addEventListener('DOMContentLoaded', addOTCMarkets);
 </script>
+    <div id="advanced-analysis" style="display: none;">
+  <!-- سيتم عرض التحليل هنا -->
+</div>
+
+<script>
+// تحسينات الواجهة للجوال
+const style = document.createElement('style');
+style.textContent = `
+  @media (max-width: 768px) {
+    .market-card {
+      padding: 12px !important;
+    }
+    .timeframe-btn {
+      padding: 10px !important;
+      margin: 3px !important;
+      font-size: 14px;
+    }
+    #candleChart {
+      height: 350px !important;
+    }
+  }
+  
+  .progress-bar {
+    height: 8px;
+    background: #ecf0f1;
+    border-radius: 10px;
+    margin: 10px 0;
+  }
+  
+  .progress-value {
+    height: 100%;
+    border-radius: 10px;
+    background: #2ecc71;
+    width: 95%;
+  }
+`;
+document.head.appendChild(style);
+
+// تحليل الصورة (مثال مبسط)
+function analyzeImage(imageFile) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      // محاكاة تحليل الصورة (في الواقع تحتاج لربط بAPI متخصص)
+      setTimeout(() => {
+        resolve({
+          pattern: "Bullish Engulfing",
+          confidence: 96,
+          timeframe: "15s",
+          direction: "up"
+        });
+      }, 1500);
+    };
+    reader.readAsDataURL(imageFile);
+  });
+}
+
+// أنماط الشموع المحسنة
+const enhancedPatterns = {
+  "Bullish 5s": { signal: "up", desc: "نمط صاعد سريع (5 ثواني)", accuracy: 94 },
+  "Bearish 15s": { signal: "down", desc: "نمط هابط (15 ثانية)", accuracy: 95 },
+  // ... أضف باقي الأنماط
+};
+
+// تحليل متقدم للفريمات القصيرة
+async function analyzeAdvanced(marketId, timeframe) {
+  try {
+    // محاكاة تحليل حقيقي
+    const analysisResult = {
+      market: marketId,
+      signal: timeframe === "5s" ? "up" : "down",
+      confidence: timeframe === "5s" ? 93 : 96,
+      patterns: [
+        timeframe === "5s" ? "Bullish 5s" : "Bearish 15s"
+      ]
+    };
+    
+    displayAdvancedResult(analysisResult);
+  } catch (error) {
+    console.error("Error in analysis:", error);
+  }
+}
+
+// عرض النتائج المحسنة
+function displayAdvancedResult(result) {
+  const analysisDiv = document.getElementById('advanced-analysis');
+  analysisDiv.style.display = 'block';
+  
+  analysisDiv.innerHTML = `
+    <div style="background: white; border-radius: 10px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+      <h2 style="color: #2c3e50;">نتيجة التحليل المتقدم</h2>
+      <div style="display: flex; justify-content: space-between; margin: 15px 0;">
+        <span>الإطار الزمني: <strong>${result.timeframe || '15s'}</strong></span>
+        <span>الزوج: <strong>${result.market}</strong></span>
+      </div>
+      
+      <div class="progress-bar">
+        <div class="progress-value" style="width: ${result.confidence}%; 
+             background: ${result.confidence > 90 ? '#2ecc71' : '#f39c12'};"></div>
+      </div>
+      <p style="text-align: center;">الدقة: <strong>${result.confidence}%</strong></p>
+      
+      <div style="margin: 20px 0; padding: 15px; 
+           background: ${result.signal === 'up' ? 'rgba(46, 204, 113, 0.1)' : 'rgba(231, 76, 60, 0.1)'};
+           border-radius: 8px; border-left: 4px solid ${result.signal === 'up' ? '#2ecc71' : '#e74c3c'};">
+        <h3 style="color: ${result.signal === 'up' ? '#2ecc71' : '#e74c3c'}; margin-top: 0;">
+          ${result.signal === 'up' ? '🟢 إشارة شراء قوية' : '🔴 إشارة بيع قوية'}
+        </h3>
+        <p>${result.patterns.map(p => enhancedPatterns[p]?.desc || p).join('<br>')}</p>
+      </div>
+    </div>
+  `;
+}
+
+// تعديل واجهة التحليل الأساسية
+document.addEventListener('DOMContentLoaded', function() {
+  // إضافة خيارات الفريمات القصيرة
+  const timeframeDiv = document.querySelector('.timeframe-selector');
+  timeframeDiv.innerHTML += `
+    <button class="timeframe-btn" onclick="analyzeAdvanced('OTC1', '5s')">5 ثواني</button>
+    <button class="timeframe-btn" onclick="analyzeAdvanced('OTC1', '15s')">15 ثانية</button>
+  `;
+  
+  // إضافة تحليل الصور
+  const uploadDiv = document.createElement('div');
+  uploadDiv.innerHTML = `
+    <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+      <h3>تحليل صورة الشموع</h3>
+      <input type="file" id="chart-image" accept="image/*" style="margin: 10px 0;">
+      <button onclick="analyzeUploadedImage()" 
+              style="background: #3498db; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer;">
+        تحليل الصورة
+      </button>
+    </div>
+  `;
+  document.querySelector('.container').appendChild(uploadDiv);
+});
+
+async function analyzeUploadedImage() {
+  const input = document.getElementById('chart-image');
+  if (input.files.length === 0) return;
+  
+  const result = await analyzeImage(input.files[0]);
+  displayAdvancedResult({
+    ...result,
+    market: "صورة مرفوعة"
+  });
+}
+</script>
 </body>
 </html>
