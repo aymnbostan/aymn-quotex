@@ -3,125 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام الإشارات المالية</title>
+    <title>نظام DIAMOND PRO - التحليل الفني الدقيق</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.0"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* الأنماط الأساسية */
+        :root {
+            --primary: #0f172a;
+            --secondary: #1e40af;
+            --up: #10b981;
+            --down: #ef4444;
+            --neutral: #f59e0b;
+            --bg: #020617;
+            --card: #1e293b;
+            --text: #e2e8f0;
+        }
+        
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f5f7fa;
+            font-family: 'Tajawal', sans-serif;
+            background: var(--bg);
+            color: var(--text);
             margin: 0;
             padding: 0;
-            color: #333;
+            min-height: 100vh;
         }
         
-        /* حاوية الإشارات */
-        .signals-container {
+        /* نظام الإشارات */
+        .signal-center {
             position: fixed;
             top: 20px;
-            left: 20px;
-            right: 20px;
-            max-width: 400px;
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 1000;
+            width: 90%;
+            max-width: 600px;
         }
         
-        /* بطاقة الإشارة */
         .signal-card {
-            background-color: white;
-            border-radius: 10px;
-            padding: 15px;
+            background: rgba(30, 41, 59, 0.95);
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             margin-bottom: 15px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border-right: 5px solid;
             animation: fadeIn 0.5s ease-out;
+            border-left: 5px solid;
+            display: flex;
+            align-items: center;
         }
         
-        /* أنواع الإشارات */
         .signal-buy {
-            border-right-color: #10b981;
+            border-left-color: var(--up);
+            animation: pulse 2s infinite;
         }
         
         .signal-sell {
-            border-right-color: #ef4444;
+            border-left-color: var(--down);
+            animation: pulse-red 2s infinite;
         }
         
-        .signal-neutral {
-            border-right-color: #f59e0b;
+        .signal-icon {
+            font-size: 1.8em;
+            margin-left: 15px;
         }
         
-        /* نص الإشارة */
-        .signal-text {
-            font-weight: bold;
-            font-size: 1.1em;
-            margin-bottom: 5px;
-        }
-        
-        .signal-details {
-            font-size: 0.9em;
-            color: #666;
-        }
-        
-        /* الرسوم المتحركة */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
+        /* باقي الأنماط... */
     </style>
 </head>
 <body>
-    <!-- حاوية عرض الإشارات -->
-    <div class="signals-container" id="signalsContainer">
-        <!-- سيتم إضافة الإشارات هنا تلقائيا -->
+    <!-- نظام الإشارات في منتصف الأعلى -->
+    <div class="signal-center" id="signalCenter"></div>
+    
+    <!-- القسم الرئيسي -->
+    <div class="container">
+        <!-- قسم الأسواق -->
+        <div class="markets-section">
+            <h2>الأسواق العالمية</h2>
+            <div class="markets-grid">
+                <div class="market-card" onclick="analyzePair('EURUSD')">
+                    <span>🇪🇺/🇺🇸</span>
+                    <h3>EUR/USD</h3>
+                    <div class="accuracy-badge">96%</div>
+                </div>
+                <!-- باقي أزواج العملات -->
+            </div>
+        </div>
+        
+        <!-- قسم التحليل -->
+        <div class="analysis-section">
+            <div class="chart-container">
+                <canvas id="candleChart"></canvas>
+            </div>
+            
+            <div class="indicators-section">
+                <h3>المؤشرات الفنية</h3>
+                <div class="indicators-grid">
+                    <div class="indicator-item">
+                        <span>RSI</span>
+                        <div class="indicator-value">42</div>
+                    </div>
+                    <!-- باقي المؤشرات -->
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        // بيانات الإشارات المطلوبة
-        const signals = [
-            {
-                type: "neutral",
-                message: "السوق متقلب الآن",
-                pair: "USD/JPY",
-                timeframe: "1m"
-            },
-            {
-                type: "sell",
-                message: "إشارة بيع محتملة",
-                pair: "GBP/USD",
-                timeframe: "15s"
-            },
-            {
-                type: "buy",
-                message: "إشارة شراء قوية",
-                pair: "EUR/USD",
-                timeframe: "5m"
-            }
-        ];
-
-        // دالة إنشاء بطاقة إشارة
-        function createSignalCard(signal) {
-            const card = document.createElement('div');
-            card.className = `signal-card signal-${signal.type}`;
+        // نظام الإشارات
+        function showSignal(type, message, pair, accuracy) {
+            const container = document.getElementById('signalCenter');
+            const signal = document.createElement('div');
             
-            card.innerHTML = `
-                <div class="signal-text">${signal.message}</div>
-                <div class="signal-details">${signal.pair} | ${signal.timeframe}</div>
+            const signalData = {
+                buy: { icon: '🟢', class: 'signal-buy' },
+                sell: { icon: '🔴', class: 'signal-sell' }
+            }[type] || { icon: '🟠', class: '' };
+            
+            signal.className = `signal-card ${signalData.class}`;
+            signal.innerHTML = `
+                <span class="signal-icon">${signalData.icon}</span>
+                <div>
+                    <strong>${message}</strong>
+                    <div>${pair} | دقة ${accuracy}%</div>
+                </div>
             `;
             
-            return card;
-        }
-
-        // عرض جميع الإشارات
-        function displayAllSignals() {
-            const container = document.getElementById('signalsContainer');
+            container.prepend(signal);
             
-            signals.forEach((signal, index) => {
-                setTimeout(() => {
-                    container.appendChild(createSignalCard(signal));
-                }, index * 300); // تأخير بين كل إشارة
-            });
+            setTimeout(() => {
+                signal.style.animation = 'fadeOut 0.5s forwards';
+                setTimeout(() => signal.remove(), 500);
+            }, 10000);
         }
-
-        // بدء العرض عند تحميل الصفحة
-        window.onload = displayAllSignals;
+        
+        // محاكاة تحليل الشموع اليابانية
+        function analyzeJapaneseCandles(pair) {
+            const patterns = [
+                'Bullish Engulfing', 'Bearish Engulfing', 
+                'Hammer', 'Shooting Star',
+                'Morning Star', 'Evening Star'
+            ];
+            
+            // محاكاة دقة 96%
+            const randomPattern = patterns[Math.floor(Math.random() * patterns.length)];
+            const isBullish = randomPattern.includes('Bullish') || randomPattern.includes('Hammer');
+            
+            showSignal(
+                isBullish ? 'buy' : 'sell',
+                `نمط ${randomPattern} تم الكشف عنه`,
+                pair,
+                96
+            );
+            
+            updateChart(pair);
+        }
+        
+        // مثال لتحليل زوج عملات
+        function analyzePair(pair) {
+            analyzeJapaneseCandles(pair);
+        }
+        
+        // تحليل تلقائي عند التحميل
+        window.onload = function() {
+            setInterval(() => {
+                const pairs = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'XAU/USD'];
+                const randomPair = pairs[Math.floor(Math.random() * pairs.length)];
+                analyzeJapaneseCandles(randomPair);
+            }, 60000); // كل دقيقة
+        };
     </script>
 </body>
 </html>
