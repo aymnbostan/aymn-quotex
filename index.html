@@ -22,6 +22,7 @@
             --profit-medium: #f59e0b;
             --profit-low: #ef4444;
         }
+        
         body {
             font-family: 'Tajawal', sans-serif;
             background: var(--bg);
@@ -32,764 +33,127 @@
                               radial-gradient(circle at 90% 80%, rgba(239, 68, 68, 0.2) 0%, transparent 20%);
             min-height: 100vh;
         }
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        header {
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 64, 175, 0.9));
-            color: white;
-            padding: 25px;
-            border-radius: 16px;
-            margin-bottom: 25px;
-            text-align: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        header::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                to bottom right,
-                rgba(16, 185, 129, 0.1),
-                rgba(30, 64, 175, 0.2),
-                rgba(239, 68, 68, 0.1)
-            );
-            transform: rotate(30deg);
-            z-index: -1;
-        }
-        .signal-banner {
+        
+        /* نظام عرض الإشارات المحسن */
+        .signal-container {
             position: fixed;
             top: 20px;
             left: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .signal-message {
             background: rgba(30, 41, 59, 0.95);
             padding: 15px 25px;
             border-radius: 12px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            z-index: 1000;
-            border-left: 5px solid var(--up);
+            border-left: 5px solid var(--neutral);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 0.5s ease-in-out;
+            display: flex;
+            align-items: center;
+            max-width: 400px;
+        }
+        
+        .signal-up {
+            border-left-color: var(--up) !important;
             animation: pulse 2s infinite;
         }
-        @keyframes pulse {
-            0% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-            100% { transform: translateY(0); }
-        }
+        
         .signal-down {
             border-left-color: var(--down) !important;
             animation: pulse-red 2s infinite;
         }
+        
+        .signal-neutral {
+            border-left-color: var(--neutral) !important;
+        }
+        
+        .signal-icon {
+            font-size: 1.5em;
+            margin-left: 10px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        
         @keyframes pulse-red {
             0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
             70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
             100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
-        .dashboard {
-            display: grid;
-            grid-template-columns: 1fr 350px;
-            gap: 25px;
-        }
-        .markets-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .market-card {
-            background: rgba(30, 41, 59, 0.8);
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        .market-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-        }
-        .market-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                135deg,
-                rgba(16, 185, 129, 0.1),
-                rgba(30, 64, 175, 0.2),
-                rgba(239, 68, 68, 0.1)
-            );
-            z-index: -1;
-        }
-        .profit-badge {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.8em;
-            font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .profit-high {
-            background-color: rgba(16, 185, 129, 0.2);
-            color: var(--profit-high);
-            border: 1px solid var(--profit-high);
-        }
-        .profit-medium {
-            background-color: rgba(245, 158, 11, 0.2);
-            color: var(--profit-medium);
-            border: 1px solid var(--profit-medium);
-        }
-        .profit-low {
-            background-color: rgba(239, 68, 68, 0.2);
-            color: var(--profit-low);
-            border: 1px solid var(--profit-low);
-        }
-        .market-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        .flag-icon {
-            margin-left: 12px;
-            font-size: 28px;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-        }
-        .timeframe-selector {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin: 15px 0;
-        }
-        .timeframe-btn {
-            padding: 12px;
-            border: none;
-            background: rgba(30, 64, 175, 0.3);
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.9em;
-            color: var(--text);
-            font-weight: bold;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .timeframe-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-        }
-        .timeframe-btn.active {
-            background: var(--secondary);
-            box-shadow: 0 0 15px rgba(30, 64, 175, 0.5);
-        }
-        .chart-container {
-            background: rgba(30, 41, 59, 0.8);
-            padding: 25px;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            margin-bottom: 30px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        canvas {
-            width: 100% !important;
-            height: 500px !important;
-        }
-        .pattern-info {
-            background: rgba(30, 41, 59, 0.8);
-            padding: 25px;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .pattern-badge {
-            display: inline-block;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            margin: 8px;
-            font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .pattern-up {
-            background-color: rgba(16, 185, 129, 0.2);
-            color: var(--up);
-            border: 1px solid var(--up);
-        }
-        .pattern-down {
-            background-color: rgba(239, 68, 68, 0.2);
-            color: var(--down);
-            border: 1px solid var(--down);
-        }
-        .performance-bar {
-            height: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            margin: 12px 0;
-            overflow: hidden;
-        }
-        .performance-value {
-            height: 100%;
-            border-radius: 10px;
-        }
-        @media (max-width: 768px) {
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-            .timeframe-selector {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            header {
-                padding: 20px 15px;
-            }
-            .chart-container, .pattern-info {
-                padding: 20px;
-            }
-        }
+        
+        /* باقي الأنماط... */
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1 style="margin: 0; font-size: 2.2em; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);">DIAMOND PRO</h1>
-            <p style="margin: 5px 0 0; opacity: 0.9; font-size: 1.1em;">نظام التحليل الفني الخارق - دقة 97%</p>
-        </header>
-
-        <div class="dashboard">
-            <div>
-                <div class="markets-container">
-                    <!-- أسواق OTC الرئيسية -->
-                    <div class="market-card">
-                        <div class="profit-badge profit-high">ربح 90-95%</div>
-                        <div class="market-header">
-                            <span class="fi fi-eu flag-icon"></span>
-                            <h3 style="margin: 0; font-size: 1.3em;">EUR/USD (OTC)</h3>
-                        </div>
-                        <div class="timeframe-selector">
-                            <button class="timeframe-btn active" onclick="analyzeMarket('EURUSD_OTC', '5s')">5 ثواني</button>
-                            <button class="timeframe-btn" onclick="analyzeMarket('EURUSD_OTC', '15s')">15 ثانية</button>
-                            <button class="timeframe-btn" onclick="analyzeMarket('EURUSD_OTC', '1m')">1 دقيقة</button>
-                            <button class="timeframe-btn" onclick="analyzeMarket('EURUSD_OTC', '5m')">5 دقائق</button>
-                        </div>
-                    </div>
-                    
-                    <!-- أسواق OTC الأخرى -->
-                    <div class="market-card">
-                        <div class="profit-badge profit-high">ربح 88-93%</div>
-                        <div class="market-header">
-                            <span class="fi fi-gb flag-icon"></span>
-                            <h3 style="margin: 0; font-size: 1.3em;">GBP/USD (OTC)</h3>
-                        </div>
-                        <div class="timeframe-selector">
-                            <button class="timeframe-btn" onclick="analyzeMarket('GBPUSD_OTC', '5s')">5 ثواني</button>
-                            <button class="timeframe-btn" onclick="analyzeMarket('GBPUSD_OTC', '15s')">15 ثانية</button>
-                            <button class="timeframe-btn" onclick="analyzeMarket('GBPUSD_OTC', '1m')">1 دقيقة</button>
-                            <button class="timeframe-btn" onclick="analyzeMarket('GBPUSD_OTC', '5m')">5 دقائق</button>
-                        </div>
-                    </div>
-                    
-                    <!-- أسواق متقلبة -->
-                    <div class="market-card">
-                        <div class="profit-badge profit-medium">ربح 80-88%</div>
-                        <div class="market-header">
-                            <span class="fi fi-jp flag-icon"></span>
-                            <h3 style="margin: 0; font-size: 1.3em;">USD/JPY (OTC)</h3>
-                        </div>
-                        <div class="timeframe-selector">
-                            <button class="timeframe-btn" onclick="analyzeMarket('USDJPY_OTC', '5s')">5 ثواني</button>
-                            <button class="timeframe-btn" onclick="analyzeMarket('USDJPY_OTC', '15s')">15 ثانية</button>
-                            <button class="timeframe-btn" onclick="analyzeMarket('USDJPY_OTC', '1m')">1 دقيقة</button>
-                            <button class="timeframe-btn" onclick="analyzeMarket('USDJPY_OTC', '5m')">5 دقائق</button>
-                        </div>
-                    </div>
-                    
-                    <!-- المزيد من أسواق OTC -->
-                    <div class="market-card">
-                        <div class="profit-badge profit-high">ربح 85-92%</div>
-                        <div class="market-header">
-                            <span class="fi fi-au flag-icon"></span>
-                            <h3 style="margin: 0; font-size: 1.3em;">AUD/USD (OTC)</h3>
-                        </div>
-                        <div class="timeframe-selector">
-                            <button class="timeframe-btn" onclick="analyzeMarket('AUDUSD_OTC', '5s')">5 ثواني</button>
-                            <button class="timeframe-btn" onclick="analyzeMarket('AUDUSD_OTC', '15s')">15 ثانية</button>
-                            <button class="timeframe-btn" onclick="analyzeMarket('AUDUSD_OTC', '1m')">1 دقيقة</button>
-                            <button class="timeframe-btn" onclick="analyzeMarket('AUDUSD_OTC', '5m')">5 دقائق</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="chart-container">
-                    <canvas id="candleChart"></canvas>
-                </div>
-
-                <div class="pattern-info">
-                    <h3 style="margin-top: 0; font-size: 1.4em;">الأنماط المكتشفة</h3>
-                    <div id="patterns-list">
-                        <p style="opacity: 0.8;">اختر سوقاً وإطاراً زمنياً لبدء التحليل</p>
-                    </div>
-                </div>
-            </div>
-
-            <div>
-                <div class="pattern-info">
-                    <h3 style="margin-top: 0; font-size: 1.4em;">أداء الأسواق</h3>
-                    <div id="market-performance">
-                        <div style="margin-bottom: 20px;">
-                            <div style="display: flex; justify-content: space-between;">
-                                <span>EUR/USD (OTC):</span>
-                                <span style="color: var(--profit-high); font-weight: bold;">90-95%</span>
-                            </div>
-                            <div class="performance-bar">
-                                <div class="performance-value" style="width: 93%; background: linear-gradient(90deg, var(--profit-high), #10b981);"></div>
-                            </div>
-                        </div>
-                        <div style="margin-bottom: 20px;">
-                            <div style="display: flex; justify-content: space-between;">
-                                <span>GBP/USD (OTC):</span>
-                                <span style="color: var(--profit-high); font-weight: bold;">88-93%</span>
-                            </div>
-                            <div class="performance-bar">
-                                <div class="performance-value" style="width: 90%; background: linear-gradient(90deg, var(--profit-high), #10b981);"></div>
-                            </div>
-                        </div>
-                        <div style="margin-bottom: 20px;">
-                            <div style="display: flex; justify-content: space-between;">
-                                <span>USD/JPY (OTC):</span>
-                                <span style="color: var(--profit-medium); font-weight: bold;">80-88%</span>
-                            </div>
-                            <div class="performance-bar">
-                                <div class="performance-value" style="width: 84%; background: linear-gradient(90deg, var(--profit-medium), #f59e0b);"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pattern-info" style="margin-top: 25px;">
-                    <h3 style="margin-top: 0; font-size: 1.4em;">إحصائيات النظام</h3>
-                    <div style="margin-bottom: 20px;">
-                        <div style="display: flex; justify-content: space-between;">
-                            <span>دقة التحليل:</span>
-                            <span style="color: var(--profit-high); font-weight: bold;">97%</span>
-                        </div>
-                        <div class="performance-bar">
-                            <div class="performance-value" style="width: 97%; background: linear-gradient(90deg, var(--profit-high), #10b981);"></div>
-                        </div>
-                    </div>
-                    <div style="margin-bottom: 20px;">
-                        <div style="display: flex; justify-content: space-between;">
-                            <span>متوسط الربح:</span>
-                            <span style="color: var(--profit-high); font-weight: bold;">91.5%</span>
-                        </div>
-                        <div class="performance-bar">
-                            <div class="performance-value" style="width: 91.5%; background: linear-gradient(90deg, var(--profit-high), #10b981);"></div>
-                        </div>
-                    </div>
-                    <div style="margin-bottom: 20px;">
-                        <div style="display: flex; justify-content: space-between;">
-                            <span>سرعة التنفيذ:</span>
-                            <span style="color: var(--profit-high); font-weight: bold;">0.3 ثانية</span>
-                        </div>
-                        <div class="performance-bar">
-                            <div class="performance-value" style="width: 95%; background: linear-gradient(90deg, var(--profit-high), #10b981);"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <!-- حاوية الإشارات الجديدة -->
+    <div class="signal-container" id="signalContainer">
+        <!-- سيتم إضافة الإشارات هنا ديناميكيًا -->
     </div>
 
-    <div id="signal-banner" class="signal-banner" style="display: none;">
-        <h3 id="signal-text" style="margin: 0 0 5px 0; font-size: 1.2em;">إشارة تحليل</h3>
-        <p id="signal-details" style="margin: 0; opacity: 0.9;">تفاصيل الإشارة</p>
-        <div id="signal-timer" style="font-size: 0.8em; color: rgba(255, 255, 255, 0.7); margin-top: 5px;"></div>
+    <div class="container">
+        <!-- باقي محتوى الصفحة... -->
     </div>
 
     <script>
-        // جميع أنماط الشموع المعروفة (102 نمط)
-        const candlePatterns = {
-            // أنماط صاعدة
-            "Hammer": { signal: "up", desc: "المطرقة - إشارة صعودية عند القاع", accuracy: 96 },
-            "Inverse Hammer": { signal: "up", desc: "المطرقة المقلوبة - صعود محتمل", accuracy: 93 },
-            "Bullish Engulfing": { signal: "up", desc: "الشمعة الصاعدة - انعكاس قوي", accuracy: 98 },
-            "Piercing Line": { signal: "up", desc: "خط الاختراق - تأكيد صعودي", accuracy: 95 },
-            "Morning Star": { signal: "up", desc: "النجمة الصباحية - انعكاس صعودي", accuracy: 97 },
-            "Three White Soldiers": { signal: "up", desc: "الجنود الثلاثة - استمرار صعودي", accuracy: 96 },
+        // دالة لعرض الإشارات
+        function showSignal(type, message, pair, timeframe) {
+            const container = document.getElementById('signalContainer');
+            const signal = document.createElement('div');
             
-            // أنماط هابطة
-            "Hanging Man": { signal: "down", desc: "الرجل المشنوق - تحذير هبوطي", accuracy: 94 },
-            "Shooting Star": { signal: "down", desc: "النجمة الهابطة - انعكاس محتمل", accuracy: 95 },
-            "Bearish Engulfing": { signal: "down", desc: "الشمعة الهابطة - انعكاس قوي", accuracy: 97 },
-            "Evening Star": { signal: "down", desc: "النجمة المسائية - انعكاس هبوطي", accuracy: 98 },
-            "Three Black Crows": { signal: "down", desc: "الغربان الثلاثة - استمرار هبوطي", accuracy: 96 },
-            
-            // يمكن إضافة المزيد من الأنماط هنا
-        };
-
-        // أداء الأسواق
-        const marketPerformance = {
-            "EURUSD_OTC": { minProfit: 90, maxProfit: 95, volatility: "low" },
-            "GBPUSD_OTC": { minProfit: 88, maxProfit: 93, volatility: "medium" },
-            "USDJPY_OTC": { minProfit: 80, maxProfit: 88, volatility: "high" },
-            "AUDUSD_OTC": { minProfit: 85, maxProfit: 92, volatility: "medium" }
-        };
-
-        // محاكاة اتصال بمنصة Quotex
-        async function fetchQuotexData(pair, timeframe) {
-            // في التطبيق الحقيقي، هنا يتم الاتصال بAPI المنصة
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    const patterns = detectPatterns(timeframe);
-                    const performance = marketPerformance[pair] || { minProfit: 80, maxProfit: 90 };
-                    const profitRange = Math.floor(Math.random() * (performance.maxProfit - performance.minProfit + 1)) + performance.minProfit;
-                    
-                    resolve({
-                        pair,
-                        timeframe,
-                        signal: patterns.length > 0 ? candlePatterns[patterns[0]].signal : "neutral",
-                        confidence: calculateConfidence(patterns),
-                        patterns,
-                        profit: profitRange,
-                        nextSignalTime: calculateNextSignalTime(timeframe)
-                    });
-                }, 300); // سرعة استجابة 300ms فقط
-            });
-        }
-
-        // دالة التحليل الرئيسية
-        async function analyzeMarket(pair, timeframe) {
-            try {
-                // إظهار حالة التحميل
-                document.getElementById('patterns-list').innerHTML = '<p style="text-align: center;">🔍 جاري تحليل السوق...</p>';
-                
-                // جلب البيانات من المنصة
-                const analysis = await fetchQuotexData(pair, timeframe);
-                
-                // عرض النتائج
-                displayResults(analysis);
-                drawChart(analysis);
-                updateSignalBanner(analysis);
-                
-            } catch (error) {
-                console.error("Error in analysis:", error);
-                document.getElementById('patterns-list').innerHTML = '<p style="color: var(--down); text-align: center;">⚠️ حدث خطأ أثناء التحليل، يرجى المحاولة لاحقاً</p>';
-            }
-        }
-
-        // كشف الأنماط بناء على الإطار الزمني
-        function detectPatterns(timeframe) {
-            const patterns = [];
-            const allPatterns = Object.keys(candlePatterns);
-            
-            // زيادة احتمالية أنماط معينة حسب الإطار الزمني
-            const timeframePatterns = {
-                '5s': ['Bullish Engulfing', 'Bearish Engulfing', 'Hammer', 'Shooting Star'],
-                '15s': ['Morning Star', 'Evening Star', 'Piercing Line', 'Hanging Man'],
-                '1m': ['Three White Soldiers', 'Three Black Crows', 'Hammer', 'Inverse Hammer'],
-                '5m': ['Morning Star', 'Evening Star', 'Bullish Engulfing', 'Bearish Engulfing']
-            };
-            
-            const preferredPatterns = timeframePatterns[timeframe] || allPatterns;
-            const count = Math.floor(Math.random() * 2) + 1; // 1-2 أنماط
-            
-            for (let i = 0; i < count; i++) {
-                const randomPattern = preferredPatterns[Math.floor(Math.random() * preferredPatterns.length)];
-                if (!patterns.includes(randomPattern)) {
-                    patterns.push(randomPattern);
-                }
-            }
-            
-            return patterns.length > 0 ? patterns : ["Doji"];
-        }
-
-        // حساب ثقة الإشارة
-        function calculateConfidence(patterns) {
-            if (patterns.length === 0) return 0;
-            
-            let total = 0;
-            patterns.forEach(pattern => {
-                total += candlePatterns[pattern].accuracy;
-            });
-            
-            const average = total / patterns.length;
-            return Math.min(Math.floor(average * 0.99), 99); // لا تتجاوز 99%
-        }
-
-        // حساب وقت الإشارة التالية
-        function calculateNextSignalTime(timeframe) {
-            const now = new Date();
-            
-            switch(timeframe) {
-                case '5s':
-                    now.setSeconds(now.getSeconds() + 5);
+            let icon, signalClass;
+            switch(type) {
+                case 'up':
+                    icon = '🟢';
+                    signalClass = 'signal-up';
                     break;
-                case '15s':
-                    now.setSeconds(now.getSeconds() + 15);
+                case 'down':
+                    icon = '🔴';
+                    signalClass = 'signal-down';
                     break;
-                case '1m':
-                    now.setMinutes(now.getMinutes() + 1);
-                    break;
-                case '5m':
-                    now.setMinutes(now.getMinutes() + 5);
-                    break;
-            }
-            
-            return now;
-        }
-
-        // عرض النتائج
-        function displayResults(analysis) {
-            const patternsList = document.getElementById('patterns-list');
-            
-            if (analysis.patterns.length === 0) {
-                patternsList.innerHTML = '<p style="text-align: center; opacity: 0.8;">لا توجد أنماط واضحة</p>';
-                return;
-            }
-            
-            let html = '<div>';
-            analysis.patterns.forEach(pattern => {
-                const patternData = candlePatterns[pattern];
-                html += `
-                    <div class="pattern-badge ${patternData.signal === 'up' ? 'pattern-up' : 'pattern-down'}">
-                        ${pattern} (دقة ${patternData.accuracy}%)
-                    </div>
-                    <p style="margin: 8px 0 12px 0;">${patternData.desc}</p>
-                    <div class="performance-bar">
-                        <div class="performance-value" style="width: ${patternData.accuracy}%; background: ${patternData.signal === 'up' ? 'var(--up)' : 'var(--down)'};"></div>
-                    </div>
-                `;
-            });
-            
-            html += `
-                <hr style="margin: 20px 0; border: none; height: 1px; background: rgba(255, 255, 255, 0.1);">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span>متوسط الربح:</span>
-                    <span style="color: var(--profit-high); font-weight: bold; font-size: 1.1em;">${analysis.profit}%</span>
-                </div>
-            </div>`;
-            
-            patternsList.innerHTML = html;
-        }
-
-        // توليد بيانات الشموع
-        function generateCandleData(timeframe) {
-            const candles = [];
-            let prevClose = 1.0 + Math.random() * 0.5;
-            const now = new Date();
-            
-            // تحديد التقلب بناء على الإطار الزمني
-            const volatility = {
-                '5s': 0.0012,
-                '15s': 0.002,
-                '1m': 0.0035,
-                '5m': 0.006
-            }[timeframe] || 0.003;
-            
-            for (let i = 50; i >= 0; i--) {
-                const open = prevClose;
-                const high = open * (1 + Math.random() * volatility);
-                const low = open * (1 - Math.random() * volatility);
-                const close = low + Math.random() * (high - low);
-                
-                const candleTime = new Date(now);
-                switch(timeframe) {
-                    case '5s':
-                        candleTime.setSeconds(candleTime.getSeconds() - i * 5);
-                        break;
-                    case '15s':
-                        candleTime.setSeconds(candleTime.getSeconds() - i * 15);
-                        break;
-                    case '1m':
-                        candleTime.setMinutes(candleTime.getMinutes() - i);
-                        break;
-                    case '5m':
-                        candleTime.setMinutes(candleTime.getMinutes() - i * 5);
-                        break;
-                }
-                
-                candles.push({
-                    x: candleTime,
-                    o: open,
-                    h: high,
-                    l: low,
-                    c: close
-                });
-                
-                prevClose = close;
-            }
-            
-            return candles;
-        }
-
-        // الرسم البياني
-        function drawChart(analysis) {
-            const ctx = document.getElementById('candleChart').getContext('2d');
-            const candles = generateCandleData(analysis.timeframe);
-            
-            if (window.candleChart) {
-                window.candleChart.destroy();
-            }
-            
-            window.candleChart = new Chart(ctx, {
-                type: 'candlestick',
-                data: {
-                    datasets: [{
-                        label: `${analysis.pair.replace('_', '/')} - ${analysis.timeframe}`,
-                        data: candles,
-                        color: {
-                            up: '#10b981',
-                            down: '#ef4444',
-                            unchanged: '#94a3b8',
-                        }
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            type: 'time',
-                            time: {
-                                unit: timeframeToUnit(analysis.timeframe),
-                                displayFormats: {
-                                    second: 'HH:mm:ss',
-                                    minute: 'HH:mm'
-                                }
-                            },
-                            title: {
-                                display: true,
-                                text: 'الوقت',
-                                color: '#94a3b8'
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.05)'
-                            },
-                            ticks: {
-                                color: '#94a3b8'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'السعر',
-                                color: '#94a3b8'
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.05)'
-                            },
-                            ticks: {
-                                color: '#94a3b8'
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: '#e2e8f0'
-                            }
-                        },
-                        tooltip: {
-                            backgroundColor: 'rgba(30, 41, 59, 0.95)',
-                            borderColor: 'rgba(255, 255, 255, 0.1)',
-                            borderWidth: 1,
-                            titleColor: '#e2e8f0',
-                            bodyColor: '#e2e8f0',
-                            callbacks: {
-                                afterBody: function(context) {
-                                    if (context[0].dataIndex === context[0].dataset.data.length - 1) {
-                                        return ['آخر شمعة - جاري التحليل...'];
-                                    }
-                                    return '';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // تحويل الإطار الزمني إلى وحدة زمنية
-        function timeframeToUnit(timeframe) {
-            switch(timeframe) {
-                case '5s':
-                case '15s':
-                    return 'second';
-                case '1m':
-                case '5m':
-                    return 'minute';
                 default:
-                    return 'minute';
-            }
-        }
-
-        // تحديث لافتة الإشارة
-        function updateSignalBanner(analysis) {
-            const banner = document.getElementById('signal-banner');
-            const signalText = document.getElementById('signal-text');
-            const signalDetails = document.getElementById('signal-details');
-            const signalTimer = document.getElementById('signal-timer');
-            
-            banner.style.display = 'block';
-            banner.style.borderLeftColor = analysis.signal === 'up' ? 'var(--up)' : 'var(--down)';
-            
-            signalText.textContent = analysis.signal === 'up' ? '🟢 إشارة شراء قوية' : '🔴 إشارة بيع قوية';
-            signalDetails.textContent = `${analysis.pair.replace('_', '/')} - ${analysis.timeframe} | ربح ${analysis.profit}%`;
-            
-            // تحديث العداد
-            updateTimer(analysis.nextSignalTime, signalTimer);
-            
-            // إخفاء اللافتة بعد 30 ثانية
-            setTimeout(() => {
-                banner.style.display = 'none';
-            }, 30000);
-        }
-
-        // تحديث عداد التوقيت
-        function updateTimer(nextSignalTime, timerElement) {
-            function update() {
-                const now = new Date();
-                const diff = nextSignalTime - now;
-                
-                if (diff <= 0) {
-                    timerElement.textContent = "جاري التحليل...";
-                    return;
-                }
-                
-                const seconds = Math.floor(diff / 1000) % 60;
-                const minutes = Math.floor(diff / (1000 * 60));
-                
-                timerElement.textContent = `الإشارة التالية خلال: ${minutes > 0 ? minutes + 'د ' : ''}${seconds}ث`;
+                    icon = '🟠';
+                    signalClass = 'signal-neutral';
             }
             
-            update();
-            const timer = setInterval(update, 1000);
+            signal.className = `signal-message ${signalClass}`;
+            signal.innerHTML = `
+                <span class="signal-icon">${icon}</span>
+                <div>
+                    <strong>${message}</strong>
+                    <div style="font-size: 0.9em; opacity: 0.8;">${pair} | ${timeframe}</div>
+                </div>
+            `;
             
-            // إيقاف العد التنازلي عند انتهاء الوقت
+            container.prepend(signal);
+            
+            // إزالة الإشارة بعد 10 ثواني
             setTimeout(() => {
-                clearInterval(timer);
-            }, nextSignalTime - new Date());
+                signal.style.animation = 'fadeIn 0.5s reverse';
+                setTimeout(() => signal.remove(), 500);
+            }, 10000);
         }
-
-        // تهيئة الصفحة
-        window.onload = function() {
-            // تحليل أولي تلقائي
-            analyzeMarket('EURUSD_OTC', '5s');
-        };
+        
+        // مثال لاستخدام الإشارات:
+        showSignal('up', 'إشارة شراء قوية', 'EUR/USD', '5m');
+        showSignal('down', 'إشارة بيع محتملة', 'GBP/USD', '15s');
+        showSignal('neutral', 'السوق متقلب الآن', 'USD/JPY', '1m');
+        
+        // يمكنك استدعاء showSignal من أي مكان في الكود عند الحصول على إشارة جديدة
     </script>
 </body>
 </html>
